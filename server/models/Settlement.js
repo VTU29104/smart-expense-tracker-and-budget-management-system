@@ -5,7 +5,7 @@ const settlementSchema = new mongoose.Schema({
   paidBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   paidTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   amount: { type: Number, required: true, min: 0.01 },
-  currency: { type: String, default: 'GBP' },
+  currency: { type: String, default: 'INR' },
   note: { type: String, trim: true, maxlength: 300 }
 }, { timestamps: true });
 

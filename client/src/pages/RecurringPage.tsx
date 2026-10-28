@@ -289,7 +289,7 @@ function RecurringModal({ item, onClose, onSave }: {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="label">Amount (£)</label>
+              <label className="label">Amount (₹)</label>
               <input
                 className="input dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 type="number" step="0.01" min="0.01"

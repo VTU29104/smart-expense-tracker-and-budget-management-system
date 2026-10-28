@@ -105,7 +105,7 @@ function InviteCard({ group, onAccepted }: { group: Group; onAccepted: () => voi
 }
 
 function CreateGroupModal({ onClose, onCreated }: { onClose: () => void; onCreated: () => void }) {
-  const [form, setForm] = useState({ name: '', description: '', currency: 'GBP' });
+  const [form, setForm] = useState({ name: '', description: '', currency: 'INR' });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -147,7 +147,7 @@ function CreateGroupModal({ onClose, onCreated }: { onClose: () => void; onCreat
               className="input"
               value={form.name}
               onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-              placeholder="e.g. Flat Share, Weekend Trip"
+              placeholder="e.g. Hostel Room B-204, Class Project Team"
               required
             />
           </div>
@@ -157,7 +157,7 @@ function CreateGroupModal({ onClose, onCreated }: { onClose: () => void; onCreat
               className="input"
               value={form.description}
               onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-              placeholder="What's this group for?"
+              placeholder="e.g. Shared room expenses, Wi-Fi, project hardware"
             />
           </div>
           <div>

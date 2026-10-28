@@ -1,332 +1,258 @@
-# ExpenseFlow — Full Stack Expense Tracker
+# expensetracker — Smart Student Expense Tracker and Budget Management System
 
-A production-grade expense tracking application built with **React**, **TypeScript**, **Node.js**, **Express**, and **MongoDB**. Features real-time financial summaries, category budgets, interactive analytics dashboards, dark mode, recurring expenses, smart insights, drag-and-drop dashboard, CSV/PDF export, activity feed, and tags/splits.
+> **Smart Student Finance — Spend wisely. Save confidently.**
 
-![CI](https://github.com/Anuhya3/expense-tracker/actions/workflows/ci.yml/badge.svg)
-![React](https://img.shields.io/badge/React-18.2-61DAFB?logo=react&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6?logo=typescript&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-20+-339933?logo=node.js&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-7.0-47A248?logo=mongodb&logoColor=white)
-![Express](https://img.shields.io/badge/Express-4.18-000000?logo=express&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
+A production-grade, full-stack student financial management platform built with **React 18**, **TypeScript**, **Tailwind CSS**, **Node.js**, **Express**, **MongoDB**, and **Redis**.
 
-## Live Deployments
-
-| | URL |
-|---|---|
-| **Landing Page** | https://landing-roan-alpha-72.vercel.app |
-| **App (React)** | https://client-six-inky-54.vercel.app |
-| **API (Express)** | https://server-one-dusky-56.vercel.app |
-| **GraphQL** | https://server-one-dusky-56.vercel.app/graphql |
+Featuring real-time financial tracking, INR (₹) primary currency support, student income & allowance tracking, student category budgets, a dynamic "Daily Safe-to-Spend" calculator, interactive Recharts analytics, student savings goals with progress tracking, hostel/project group bill splitting, smart student insight alerts, and campus-tailored expense exports.
 
 ---
 
-## 🐳 Docker — Run the Entire Stack with One Command
+## 🎓 Academic Project Overview
 
-The full application (React frontend, Express API, MongoDB) runs in isolated containers with a single command.
+- **Project Name**: expensetracker
+- **Project Title**: Smart Student Expense Tracker and Budget Management System
+- **Application Branding**: `expensetracker`
+- **Dashboard Greeting**: `Welcome back, Sowmya`
+- **Tagline**: *Spend wisely. Save confidently.*
+- **Subtitle**: *Smart Student Finance — Spend wisely. Save confidently.*
+- **Target Audience**: College & University Students, Hostel Residents, Student Project Groups
+
+### Abstract
+College students often struggle with managing limited monthly allowances, tracking variable campus expenditures (canteen, photocopy/xerox, transport, semester books), and splitting shared hostel or project bills with peers. Traditional expense trackers are generic, default to foreign currencies (USD/GBP), and lack student-relevant categories, income/allowance tracking, savings goals, or daily pacing guidance. 
+
+**expensetracker** solves this problem by delivering a tailored, responsive financial companion for college life. It features Indian Rupee (₹) financial calculations, campus-optimized spending categories, intelligent daily safe-to-spend guidance to prevent end-of-month fund exhaustion, allowance and scholarship income tracking, savings goals (for laptops, tuition, and emergency funds), automated AI categorization for student terminology, and collaborative group expense splitting for roommates and project teams.
+
+---
+
+## 🌟 Key Features
+
+### 1. Student Dashboard & Pacing Guidance
+- **Personalized Greeting**: "Welcome back, Sowmya" with real-time academic date display.
+- **Daily Safe-to-Spend Metric**: Dynamically calculates `(Available Balance / Days Remaining in Month)` to prevent overspending before pocket money or allowances replenish.
+- **KPI Metrics Cards**: Total Expenses, Total Income, Month-over-Month comparison, Category Budget Utilization, Available Balance, and Savings Rate.
+- **One-Click Quick Log Shortcuts**: Fast campus expense logging for high-frequency student purchases (Canteen Dosa & Chai, Metro Ticket, Xerox/Stationery, Hostel Mess) plus Income and Goal creation.
+- **Interactive Visualizations**: 30-day interactive area trends and category breakdown donut charts using Recharts with INR axes.
+
+### 2. Income & Allowance Tracking
+- Track student income sources: Monthly Allowance from parents, Merit Scholarship, Part-Time Tutoring/Jobs, Research Stipends, Freelancing, and Cash Gifts.
+- Dynamic balance calculation: `Total Income - Total Expenses = Available Balance`.
+- Savings rate calculation: `(Net Savings / Total Income) * 100%`.
+
+### 3. Student Savings Goals
+- Set and track student targets: e.g., Semester Tuition Fund, High-Performance Coding Laptop, Hostel Contingency / Emergency Fund.
+- Progress bars and quick one-click contributions from available campus savings.
+
+### 4. Tailored Student Categories
+All spending classifications are mapped with student-specific labels, icons, and descriptions:
+- 🍽️ **Canteen, Mess & Food**: Campus canteen, mess bills, coffee, tiffin, Swiggy/Zomato.
+- 🚌 **Bus, Metro & Commute**: Student bus passes, metro cards, autos, Rapido, scooty fuel.
+- 🏠 **Hostel & PG Rent**: Room rent, maintenance, deposit, warden charges.
+- ⚡ **Wi-Fi, Mobile & Recharge**: Jio/Airtel phone recharges, hostel Wi-Fi, electricity share.
+- 🎬 **Outings & Hangouts**: Movies, weekend campus trips, birthday treats, hangouts.
+- 💊 **Health & Wellness**: College infirmary, pharmacy, gym, first aid.
+- 🛍️ **Personal & Supplies**: Toiletries, clothing, grooming, room essentials.
+- 📚 **Tuition, Books & Xerox**: Semester fees, textbooks, notes printing, exam fees, stationery.
+- ✈️ **Vacation & Home Travel**: Train tickets to home, festival journeys, road trips.
+- 🎵 **OTT & Study Tools**: Coursera, Spotify Student, ChatGPT, Netflix, Prime.
+- 📦 **General & Campus Misc**: Student club fees, festival celebrations, unexpected costs.
+
+### 5. Student Group Bill Splits
+- **Roommate & Group Expenses**: Create groups for "Hostel Roommates", "Project Teams", or "College Trips".
+- **Settlement Tracking**: Computes simplified debt settlements with balance summaries so students know exactly who owes whom.
+- **Equal & Custom Splits**: Support for equal splitting or custom amount assignments.
+
+### 6. Campus AI Categorisation
+- Enhanced keyword matching recognizes Indian college terms (`mess`, `canteen`, `samosa`, `chai`, `rapido`, `pg`, `xerox`, `recharge`, `sem fee`, `textbooks`).
+- Optional Anthropic Claude receipt scanning for automatic paper bill extraction.
+
+### 7. Multi-Currency Support with INR Default
+- Indian Rupee (`₹`, `INR`) configured as base currency with standard Indian number formatting (`₹1,500.00`).
+- Real-time exchange rate engine with fallback tables for foreign currency conversion (USD, EUR, GBP, AUD, CAD, etc.).
+
+### 8. Reports & Audit Trails
+- **Branded PDF Export**: Generates professional, server-side PDF expense statements branded for *expensetracker — Smart Student Financial Records*.
+- **CSV Data Export / Import**: Bulk import campus transactions via CSV with validation and downloadable student templates with Type and Notes columns.
+- **Audit Activity Feed**: Track budget edits, group settlements, and expense additions.
+
+---
+
+## 🛠️ System Architecture & Tech Stack
+
+### Architecture Diagram
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Client (React 18 + TS)                  │
+│       Vite • Tailwind CSS • React Router 6 • Recharts       │
+└──────────────────────────────┬──────────────────────────────┘
+                               │ HTTP / REST / GraphQL
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   Server (Node.js + Express)                │
+│    Apollo GraphQL 4 • JWT Auth • Rate Limiting • Helmet     │
+└───────────────┬─────────────────────────────┬───────────────┘
+                │                             │
+                ▼                             ▼
+┌──────────────────────────────┐ ┌────────────────────────────┐
+│      MongoDB Database        │ │        Redis Cache         │
+│ Mongoose ODM • Index Engine  │ │  Exchange Rates & Sessions │
+└──────────────────────────────┘ └────────────────────────────┘
+```
+
+### Technology Matrix
+| Layer | Technologies |
+|---|---|
+| **Frontend** | React 18.2, TypeScript 5.3, Vite, Tailwind CSS 3.4, Lucide Icons, Recharts, Vitest |
+| **Backend API** | Node.js 20+, Express.js 4.18, Apollo GraphQL Server 4, Supertest, Jest |
+| **Database** | MongoDB 7.0 (with compound indexes on `{user, date}` & `{user, category, date}`) |
+| **Cache & Performance** | Redis 7.0 for currency exchange rate caching |
+| **Authentication** | JSON Web Tokens (JWT) with bcrypt password hashing |
+| **Document Generation** | PDFKit for server-side expense report generation |
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
+- **Node.js**: v18.0.0 or higher (v20+ recommended)
+- **MongoDB**: v6.0 or v7.0 running locally on port `27017` (or MongoDB Atlas URI)
+- **Redis** (optional): running locally on port `6379` (fallback in-memory mode active if Redis is offline)
 
-### Start everything
-
+### 1. Clone & Setup Project
 ```bash
-docker-compose up --build
+cd sowmyya
 ```
 
-Then open **http://localhost:3000** in your browser.
-
-| Service | URL |
-|---|---|
-| Frontend (React + Nginx) | http://localhost:3000 |
-| Backend API (Express) | http://localhost:5001 |
-| MongoDB | localhost:27017 |
-
-### Seed demo data
-
+### 2. Backend Configuration & Dependencies
 ```bash
-docker-compose exec server npm run seed
-```
-
-Login with:
-```
-Email:    demo@expense.app
-Password: demo123
-```
-
-### Other useful commands
-
-```bash
-# Run in background (detached)
-docker-compose up --build -d
-
-# Stop all containers
-docker-compose down
-
-# Stop and remove all data (wipe MongoDB volume)
-docker-compose down -v
-
-# View logs
-docker-compose logs -f server
-docker-compose logs -f client
-
-# Rebuild a single service
-docker-compose up --build server
-```
-
-### Environment variables (optional)
-
-Create a `.env` file at the project root to override defaults:
-
-```env
-JWT_SECRET=your_super_secret_key
-JWT_EXPIRES_IN=7d
-ANTHROPIC_API_KEY=sk-ant-...   # optional — enables AI receipt scanning
-```
-
----
-
-## Features
-
-### Dashboard & Analytics
-- **Real-time financial summaries** — current month total, budget utilisation, month-over-month change
-- **Category breakdown** — interactive pie chart with percentage splits across 11 expense categories
-- **Spending trends** — 30-day area chart with daily totals and trend visualisation
-- **Budget tracking** — per-category budget limits with progress bars and overspend alerts
-- **Smart Insights** — AI-like pattern detection: overspend alerts, spending spikes, savings opportunities, recurring burden analysis, category shifts, unusual transactions
-- **Draggable widgets** — reorder dashboard sections via native HTML5 drag-and-drop; layout persisted in localStorage
-- **Activity Feed** — collapsible audit log with relative timestamps and action-colour icons
-
-### Expense Management
-- **Full CRUD** — add, edit, delete expenses with validation
-- **Smart filtering** — search by description, filter by category, paginated results
-- **Rich metadata** — payment method, recurring flag, date, category tagging
-- **Tags** — add multiple tags per expense (Enter/comma to add); autocomplete from existing tags; by-tag analytics
-- **Splits** — split any expense into labelled portions with amount validation
-- **CSV Export** — download all filtered expenses as a CSV with a single click
-- **PDF Export** — professional PDF report with header, summary section, and formatted table (pdfkit, server-side)
-- **Responsive table** — sortable, paginated with tag chips and split indicators
-
-### Recurring Expenses
-- **Templates** — define weekly/monthly/yearly recurring expenses with category, payment method, and due date
-- **Pause/Resume** — toggle templates active/inactive without deleting them
-- **Generate Now** — manually trigger generation: creates Expense records for all due templates and advances next due dates
-- **Full CRUD** — add, edit, delete recurring templates
-
-### Security & Architecture
-- **JWT authentication** — stateless auth with secure token management
-- **Role-based access control (RBAC)** — user and admin roles with middleware guards
-- **Input validation** — express-validator on all endpoints with sanitised error responses
-- **Rate limiting** — 100 requests per 15-minute window per IP
-- **Helmet.js** — security headers on all responses
-- **Activity logging** — automatic audit trail for expense CRUD, budgets, recurring generation, and logins
-
-### Dark Mode
-- **Three modes** — light, dark, system (follows OS preference with `matchMedia` listener)
-- **Persisted** — preference stored in `localStorage` under `theme`
-- **Toggle** — sun/moon/monitor control in sidebar footer and login page
-- **Full coverage** — all components, modals, tables, charts, and CSS utility classes
-
----
-
-## Tech Stack
-
-| Layer       | Technology                                              |
-|-------------|--------------------------------------------------------|
-| Frontend    | React 18, TypeScript, Vite, Tailwind CSS, Recharts     |
-| Backend     | Node.js, Express, Mongoose ODM                         |
-| Database    | MongoDB with compound indexes and aggregation pipelines |
-| Auth        | JWT, bcrypt, RBAC middleware                            |
-| Security    | Helmet, CORS, rate limiting, input validation           |
-| Export      | pdfkit (server-side PDF generation), manual CSV builder |
-| Dev Tools   | Concurrently, Nodemon, ESLint                          |
-
----
-
-## Architecture
-
-```
-expense-tracker/
-├── client/                     # React + TypeScript frontend
-│   ├── src/
-│   │   ├── components/         # Layout, ThemeToggle, InsightsPanel, ActivityFeed, DashboardWidget
-│   │   ├── context/            # AuthContext (JWT), ThemeContext (dark mode)
-│   │   ├── hooks/              # useExpenses, useSummary, useInsights, useRecurring, useActivity, useTags
-│   │   ├── pages/              # Dashboard, ExpensesPage, AnalyticsPage, RecurringPage, AuthPage
-│   │   ├── utils/              # API client (with download method), formatters
-│   │   └── types.ts            # Shared TypeScript interfaces
-│   └── vite.config.ts          # Vite config with API proxy
-│
-├── server/                     # Node.js + Express API
-│   ├── models/                 # User, Expense (+ splits), Budget, RecurringExpense, Activity
-│   ├── routes/                 # RESTful route handlers
-│   │   ├── auth.js             # Register, login, profile (JWT + login activity)
-│   │   ├── expenses.js         # CRUD, export/csv, export/pdf, tags, activity logging
-│   │   ├── analytics.js        # Aggregation pipelines + insights + by-tag
-│   │   ├── budgets.js          # Per-category budget management
-│   │   ├── recurring.js        # Recurring templates CRUD + generate endpoint
-│   │   └── activity.js         # Paginated activity feed
-│   ├── middleware/             # Auth guards (protect, authorize)
-│   └── utils/                  # Seed script with 200 expenses, recurring templates, activity log
-│
-└── package.json                # Root with concurrently scripts
-```
-
----
-
-## Performance Highlights
-
-| Metric                           | Detail                                               |
-|----------------------------------|------------------------------------------------------|
-| **Aggregation pipelines**        | MongoDB `$group`, `$match`, `$sort` with indexed queries for sub-50ms analytics |
-| **Compound indexes**             | `{user, date}` and `{user, category, date}` — eliminates full collection scans |
-| **Paginated queries**            | `Promise.all` parallel count + find — reduces response times by ~40% vs sequential |
-| **Frontend bundle**              | Code-split routes via React Router lazy loading                                   |
-| **API response times**           | < 50ms for expense CRUD, < 80ms for aggregation endpoints (200 records)          |
-| **Security hardened**            | Helmet, rate limiting, JWT expiry, bcrypt cost factor 12, input sanitisation      |
-| **PDF generation**               | Server-side pdfkit streaming — no blocking, no temp files                         |
-| **Dark mode**                    | Zero-JS CSS (`class` strategy) — instant theme switch, no flash                  |
-
----
-
-## Quick Start
-
-### Prerequisites
-
-- **Node.js** ≥ 18
-- **MongoDB** running locally (or a MongoDB Atlas connection string)
-- **npm** ≥ 9
-
-### 1. Clone and install
-
-```bash
-git clone https://github.com/Anuhya3/expense-tracker.git
-cd expense-tracker
-
-# Install root + server + client dependencies
+cd server
 npm install
-npm run install:all
 ```
 
-### 2. Configure environment
-
-```bash
-cp server/.env.example server/.env
-# MONGODB_URI=mongodb://localhost:27017/expense-tracker
-# JWT_SECRET=your_secret_here
-# PORT=5001  (5000 is used by macOS AirPlay)
+Create or verify `server/.env`:
+```env
+PORT=5001
+MONGODB_URI=mongodb://127.0.0.1:27017/expense-tracker
+JWT_SECRET=sowmyya_student_expense_tracker_secret_dev_key_2026
+JWT_EXPIRES_IN=7d
+NODE_ENV=development
 ```
 
-### 3. Seed demo data
-
+### 3. Seed Realistic Student Demo Data
+Populate the database with sample student expenses, budgets, recurring bills, and hostel groups:
 ```bash
 npm run seed
 ```
 
-Creates:
-- **Demo user** — `demo@expense.app` / `demo123`
-- **Admin user** — `admin@expense.app` / `admin123`
-- **200 expenses** with tags and splits, spread across 90 days
-- **7 category budgets** for the current month
-- **5 recurring expense templates** (rent, gym, Netflix, phone, Spotify)
-- **20 activity log entries**
+**Pre-seeded Demo Student Account:**
+- **Email**: `demo@expense.app`
+- **Password**: `demo123`
+- **Student Profile**: Sowmyya (B.Tech Final Year, ₹15,000 monthly allowance)
 
-### 4. Run the app
+### 4. Frontend Setup
+```bash
+cd ../client
+npm install
+```
 
+### 5. Running the Application
+
+**Option A — Run Both Servers Concurrently (from root):**
 ```bash
 npm run dev
 ```
 
-- **Frontend** → [http://localhost:5173](http://localhost:5173)
-- **Backend API** → [http://localhost:5001](http://localhost:5001)
+**Option B — Run Separately:**
+- Backend terminal:
+  ```bash
+  cd server && npm start
+  # Express runs on http://localhost:5001
+  # GraphQL Sandbox: http://localhost:5001/graphql
+  ```
+- Frontend terminal:
+  ```bash
+  cd client && npm run dev
+  # Client runs on http://localhost:5173
+  ```
 
-### 5. Login
+---
+
+## 🧪 Testing & Verification
+
+Both the backend and frontend include automated test suites.
+
+### Frontend Unit & Component Tests (Vitest)
+```bash
+cd client
+npm test
+```
+- **Tests**: 28 passing tests covering currency formatting, student categories, summary cards, and expense modals.
+
+### Frontend Production Build
+```bash
+cd client
+npm run build
+```
+- Compiles TypeScript and creates optimized Vite production bundle in `client/dist/`.
+
+### Backend API Tests (Jest)
+```bash
+cd server
+npm test
+```
+- **Tests**: 9 passing integration tests covering user registration, validation, JWT issuance, and authentication routes.
+
+---
+
+## 📁 Project Structure
 
 ```
-Email:    demo@expense.app
-Password: demo123
+sowmyya/
+├── client/                     # Frontend Application
+│   ├── src/
+│   │   ├── components/         # Reusable UI (Sidebar, Layout, Charts, Modals)
+│   │   ├── context/            # Global Auth & Theme Context
+│   │   ├── hooks/              # Custom Data Fetching Hooks (useData)
+│   │   ├── pages/              # Pages: Dashboard, Expenses, Analytics, Groups, etc.
+│   │   ├── test/               # Vitest component & formatting tests
+│   │   ├── utils/              # INR currency formatters, API client, helpers
+│   │   └── types/              # TypeScript interfaces & types
+│   ├── index.html              # Sowmyya Application Entry
+│   └── package.json
+│
+├── server/                     # Backend API & Server
+│   ├── graphql/                # Apollo GraphQL schemas & resolvers
+│   ├── middleware/             # JWT auth & Redis cache middleware
+│   ├── models/                 # Mongoose models (User, Expense, Budget, Group, etc.)
+│   ├── routes/                 # REST endpoints (auth, expenses, analytics, groups)
+│   ├── utils/                  # Student seed script, AI categorizer, PDF generator
+│   ├── test/                   # Jest API route integration tests
+│   ├── index.js                # Express & Apollo server entrypoint
+│   └── package.json
+│
+├── LICENSE                     # MIT License & Attribution
+└── README.md                   # Project Documentation
 ```
 
 ---
 
-## API Endpoints
+## 📜 Attribution & Academic Integrity Notice
 
-### Auth
-| Method | Endpoint             | Description                     |
-|--------|----------------------|---------------------------------|
-| POST   | `/api/auth/register` | Create account                  |
-| POST   | `/api/auth/login`    | Sign in (returns JWT, logs activity) |
-| GET    | `/api/auth/me`       | Get current user                |
+This project was developed for a college degree academic evaluation by building upon and adapting the open-source **ExpenseFlow** project by **Anuhya Parlapalli** under the terms of the **MIT License**.
 
-### Expenses
-| Method | Endpoint                     | Description                              |
-|--------|------------------------------|------------------------------------------|
-| GET    | `/api/expenses`              | List (paginated, filterable, sortable)   |
-| POST   | `/api/expenses`              | Create expense (logs activity)           |
-| GET    | `/api/expenses/:id`          | Get single expense                       |
-| PUT    | `/api/expenses/:id`          | Update expense (logs activity)           |
-| DELETE | `/api/expenses/:id`          | Delete expense (logs activity)           |
-| GET    | `/api/expenses/tags`         | All unique tags for user                 |
-| GET    | `/api/expenses/export/csv`   | Export filtered expenses as CSV          |
-| GET    | `/api/expenses/export/pdf`   | Export filtered expenses as PDF          |
+### Foundation Repository
+- **Original Project**: ExpenseFlow
+- **Original Author**: Anuhya Parlapalli
+- **Original Repository**: [https://github.com/Anuhya3/expense-tracker](https://github.com/Anuhya3/expense-tracker)
+- **License**: MIT License (Preserved in full in `LICENSE`)
 
-### Analytics
-| Method | Endpoint                       | Description                            |
-|--------|--------------------------------|----------------------------------------|
-| GET    | `/api/analytics/summary`       | Monthly summary with MoM comparison    |
-| GET    | `/api/analytics/by-category`   | Category breakdown with percentages    |
-| GET    | `/api/analytics/trends`        | Daily spending over N days             |
-| GET    | `/api/analytics/monthly`       | Monthly totals for a year              |
-| GET    | `/api/analytics/budget-status` | Budget vs actual per category          |
-| GET    | `/api/analytics/insights`      | Smart insights (7 rule-based checks)   |
-| GET    | `/api/analytics/by-tag`        | Spending breakdown grouped by tag      |
-
-### Budgets
-| Method | Endpoint           | Description                       |
-|--------|--------------------|-----------------------------------|
-| GET    | `/api/budgets`     | List budgets for month/year       |
-| POST   | `/api/budgets`     | Create or update category budget  |
-| DELETE | `/api/budgets/:id` | Delete budget                     |
-
-### Recurring Expenses
-| Method | Endpoint                  | Description                                        |
-|--------|---------------------------|----------------------------------------------------|
-| GET    | `/api/recurring`          | List all recurring templates                       |
-| POST   | `/api/recurring`          | Create recurring template                          |
-| PUT    | `/api/recurring/:id`      | Update template (incl. pause/resume via isActive)  |
-| DELETE | `/api/recurring/:id`      | Delete template                                    |
-| POST   | `/api/recurring/generate` | Generate expenses for all due active templates     |
-
-### Activity
-| Method | Endpoint        | Description                         |
-|--------|-----------------|-------------------------------------|
-| GET    | `/api/activity` | Paginated activity feed (limit=20)  |
-
----
-
-## Design Decisions
-
-- **Mongoose ODM over raw MongoDB driver** — schema validation, middleware hooks, and cleaner query syntax
-- **Compound indexes** on `{user, date}` and `{user, category, date}` — match the two most common query patterns, eliminate collection scans
-- **Aggregation pipelines over application-level computation** — summaries, breakdowns, and trends run server-side in MongoDB, reducing data transfer
-- **JWT with httpOnly-ready architecture** — currently stored in localStorage; API structure supports httpOnly cookies for production hardening
-- **React Context over Redux** — auth and theme are the only truly global state; expenses/analytics use co-located fetch hooks
-- **Native HTML5 Drag-and-Drop API** — no external library; order persisted in localStorage via widget ID array
-- **`class` dark mode strategy** — Tailwind's class-based dark mode ensures zero-JS theme toggling and instant switches
-- **Server-side PDF** — pdfkit streams directly to the response; no temp files, no blocking main thread
-- **Activity logging as fire-and-forget** — `Activity.create(...).catch(() => {})` ensures logging never breaks the primary operation
-
----
-
-## Author
-
-**Anuhya Parlapalli**
-- Portfolio: [anuhya3.github.io](https://anuhya3.github.io)
-- GitHub: [@Anuhya3](https://github.com/Anuhya3)
-- LinkedIn: [anuhya-reddy-p](https://linkedin.com/in/anuhya-reddy-p)
-
----
-
-## License
-
-MIT
+### College Project Adaptations & Enhancements
+1. **Rebranding & Visual Identity**: Fully transitioned branding to **expensetracker — Smart Student Expense Tracker & Budget Management System** with academic styling, graduation cap iconography, deep forest-green theme, and personalized greeting `Welcome back, Sowmya`.
+2. **Indian Currency Architecture**: Refactored the core system default from GBP (`£`) to INR (`₹`), integrating `en-IN` numbering, Indian Rupee exchange rate base tables, and INR PDF formatting.
+3. **Student Spending Model**: Re-architected expense categories and Mongoose seed data around authentic college lifestyles (campus canteen, mess, bus/metro transit, room rent, mobile recharges, xerox/notes printing, and semester books).
+4. **Income & Allowance Tracking**: Implemented income tracking (`allowance`, `scholarship`, `part_time`, `stipend`, `freelance`, `gift`, `other_income`) with dynamic balance and savings rate calculations.
+5. **Student Savings Goals**: Added target-based savings goals (Tuition, Laptop, Emergency fund) with real-time progress indicators and contribution actions.
+6. **Daily Safe-to-Spend Metric**: Implemented a dynamic daily spending allowance widget on the student dashboard that factors in remaining days of the month to prevent end-of-month student debt.
+7. **Campus AI Categorizer**: Augmented keyword matching with Indian student vernacular (`samosa`, `chai`, `rapido`, `pg`, `xerox`, `recharge`, `sem fee`).
+8. **Student Group Workflows**: Tailored group split configurations for hostel room sharing and final-year project teams.
+9. **Production & Test Hardening**: Resolved test race conditions in Express server listeners, updated test mock assertions, and validated 100% test pass rates across both frontend (28/28) and backend (9/9) suites.

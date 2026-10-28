@@ -77,7 +77,7 @@ export default function AnalyticsPage() {
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={catData?.breakdown || []} layout="vertical" margin={{ left: 80, right: 20 }}>
-                    <XAxis type="number" tickFormatter={v => `£${v}`} tick={{ fontSize: 11, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
+                    <XAxis type="number" tickFormatter={v => `₹${v}`} tick={{ fontSize: 11, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
                     <YAxis
                       type="category" dataKey="category"
                       tickFormatter={c => getCategoryInfo(c).label}
@@ -186,9 +186,9 @@ export default function AnalyticsPage() {
                     axisLine={false} tickLine={false}
                   />
                   <YAxis
-                    tickFormatter={v => `£${v}`}
+                    tickFormatter={v => `₹${v}`}
                     tick={{ fontSize: 11, fill: '#9ca3af' }}
-                    axisLine={false} tickLine={false} width={50}
+                    axisLine={false} tickLine={false} width={55}
                   />
                   <Tooltip
                     formatter={(value: number) => [formatCurrency(value), 'Spent']}
@@ -237,7 +237,7 @@ export default function AnalyticsPage() {
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={tagData?.breakdown || []} layout="vertical" margin={{ left: 80, right: 20 }}>
-                    <XAxis type="number" tickFormatter={v => `£${v}`} tick={{ fontSize: 11, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
+                    <XAxis type="number" tickFormatter={v => `₹${v}`} tick={{ fontSize: 11, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
                     <YAxis
                       type="category" dataKey="tag"
                       tick={{ fontSize: 12, fill: '#374151' }}

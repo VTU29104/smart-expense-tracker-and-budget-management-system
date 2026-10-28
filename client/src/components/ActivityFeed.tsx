@@ -6,6 +6,7 @@ import {
   ChevronDown, ChevronUp, Activity as ActivityIcon
 } from 'lucide-react';
 import { formatDistanceToNow, parseISO } from 'date-fns';
+import { formatCurrency } from '../utils/format';
 
 const ACTION_CONFIG: Record<Activity['action'], {
   icon: React.ElementType; color: string; label: string
@@ -24,10 +25,10 @@ function formatMeta(action: Activity['action'], meta?: Record<string, unknown>):
   if (action === 'expense_created' || action === 'expense_updated' || action === 'expense_deleted') {
     const desc = meta.description as string || '';
     const amt = meta.amount as number;
-    return `${desc}${amt ? ` · £${(amt as number).toFixed(2)}` : ''}`;
+    return `${desc}${amt ? ` · ${formatCurrency(amt)}` : ''}`;
   }
-  if (action === 'budget_set') return `${meta.category} · £${meta.limit}`;
-  if (action === 'budget_exceeded') return `${meta.category} · spent £${meta.spent}`;
+  if (action === 'budget_set') return `${meta.category} · ${formatCurrency(Number(meta.limit || 0))}`;
+  if (action === 'budget_exceeded') return `${meta.category} · spent ${formatCurrency(Number(meta.spent || 0))}`;
   if (action === 'recurring_generated') return `${meta.count} expense${(meta.count as number) !== 1 ? 's' : ''} generated`;
   return '';
 }

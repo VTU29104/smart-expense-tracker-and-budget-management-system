@@ -56,7 +56,7 @@ function mapExpense(doc) {
     paymentMethod: doc.paymentMethod || 'debit_card',
     isRecurring: doc.isRecurring || false,
     tags: doc.tags || [],
-    currency: doc.currency || 'GBP',
+    currency: doc.currency || 'INR',
     originalAmount: doc.originalAmount || null,
     exchangeRate: doc.exchangeRate || null,
     userId: doc.user.toString(),
@@ -255,7 +255,7 @@ const resolvers = {
     // ── createExpense ────────────────────────────────────────────────────────
     async createExpense(_, { input }, context) {
       requireAuth(context);
-      const baseCurrency = context.user.currency || 'GBP';
+      const baseCurrency = context.user.currency || 'INR';
       const currency = (input.currency || baseCurrency).toUpperCase();
 
       let amount = input.amount;
@@ -300,7 +300,7 @@ const resolvers = {
         });
       }
 
-      const baseCurrency = context.user.currency || 'GBP';
+      const baseCurrency = context.user.currency || 'INR';
       const currency = (input.currency || existing.currency || baseCurrency).toUpperCase();
 
       let amount = input.amount ?? existing.amount;

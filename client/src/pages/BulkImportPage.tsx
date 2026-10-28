@@ -17,11 +17,11 @@ interface Row {
   confidence: number;
 }
 
-const PLACEHOLDER = `Tesco Express — weekly groceries, 34.50, 2024-03-10
-Netflix subscription, 17.99, 2024-03-01
-Uber to airport, 28.40, 2024-03-05
-Gym membership March, 45.00, 2024-03-01
-Amazon order — headphones, 89.99, 2024-03-08`;
+const PLACEHOLDER = `Campus Canteen lunch & chai, 80, 2026-10-15
+Semester engineering textbooks, 650, 2026-10-10
+Metro smartcard recharge, 300, 2026-10-12
+Hostel Wi-Fi room share, 250, 2026-10-01
+Jio 5G recharge pack, 719, 2026-10-05`;
 
 export default function BulkImportPage() {
   const [raw, setRaw] = useState('');

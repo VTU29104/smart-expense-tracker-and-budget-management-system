@@ -51,7 +51,7 @@ router.post('/', async (req, res) => {
       name: name.trim(),
       description: description ? description.trim() : '',
       owner: req.user._id,
-      currency: currency || 'GBP',
+      currency: currency || 'INR',
       members: [{
         user: req.user._id,
         role: 'owner',
@@ -276,7 +276,7 @@ router.post('/:id/expenses', async (req, res) => {
       group: group._id,
       paidBy: req.user._id,
       amount: totalAmount,
-      currency: currency || group.currency || 'GBP',
+      currency: currency || group.currency || 'INR',
       description,
       category: category || 'other',
       date: date ? new Date(date) : new Date(),
@@ -495,7 +495,7 @@ router.post('/:id/settlements', async (req, res) => {
       paidBy: req.user._id,
       paidTo,
       amount: parseFloat(amount),
-      currency: group.currency || 'GBP',
+      currency: group.currency || 'INR',
       note: note || ''
     });
 

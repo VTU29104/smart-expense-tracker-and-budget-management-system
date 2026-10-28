@@ -19,43 +19,110 @@ router.get('/summary', cache5m, async (req, res) => {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    const [[currentMonth], [lastMonth], [today]] = await Promise.all([
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const daysRemaining = Math.max(1, daysInMonth - now.getDate() + 1);
+
+    const [
+      [currentMonthExp],
+      [currentMonthInc],
+      [lastMonthExp],
+      [lastMonthInc],
+      [todayExp],
+      [todayInc]
+    ] = await Promise.all([
+      // Current month expenses
       Expense.aggregate([
-        { $match: { user: userId, date: { $gte: startOfMonth } } },
+        { $match: { user: userId, type: { $ne: 'income' }, date: { $gte: startOfMonth } } },
         { $group: { _id: null, total: { $sum: '$amount' }, count: { $sum: 1 }, avg: { $avg: '$amount' } } }
       ]),
+      // Current month income
       Expense.aggregate([
-        { $match: { user: userId, date: { $gte: startOfLastMonth, $lte: endOfLastMonth } } },
+        { $match: { user: userId, type: 'income', date: { $gte: startOfMonth } } },
         { $group: { _id: null, total: { $sum: '$amount' }, count: { $sum: 1 } } }
       ]),
+      // Last month expenses
       Expense.aggregate([
-        { $match: { user: userId, date: { $gte: startOfDay } } },
+        { $match: { user: userId, type: { $ne: 'income' }, date: { $gte: startOfLastMonth, $lte: endOfLastMonth } } },
+        { $group: { _id: null, total: { $sum: '$amount' }, count: { $sum: 1 } } }
+      ]),
+      // Last month income
+      Expense.aggregate([
+        { $match: { user: userId, type: 'income', date: { $gte: startOfLastMonth, $lte: endOfLastMonth } } },
+        { $group: { _id: null, total: { $sum: '$amount' }, count: { $sum: 1 } } }
+      ]),
+      // Today expenses
+      Expense.aggregate([
+        { $match: { user: userId, type: { $ne: 'income' }, date: { $gte: startOfDay } } },
+        { $group: { _id: null, total: { $sum: '$amount' }, count: { $sum: 1 } } }
+      ]),
+      // Today income
+      Expense.aggregate([
+        { $match: { user: userId, type: 'income', date: { $gte: startOfDay } } },
         { $group: { _id: null, total: { $sum: '$amount' }, count: { $sum: 1 } } }
       ])
     ]);
 
-    const currentTotal = currentMonth?.total || 0;
-    const lastTotal = lastMonth?.total || 0;
+    const currentTotal = +(currentMonthExp?.total || 0).toFixed(2);
+    const currentIncome = +(currentMonthInc?.total || 0).toFixed(2);
+    const lastTotal = +(lastMonthExp?.total || 0).toFixed(2);
+    const lastIncome = +(lastMonthInc?.total || 0).toFixed(2);
+
     const monthOverMonthChange = lastTotal > 0
-      ? (((currentTotal - lastTotal) / lastTotal) * 100).toFixed(1)
+      ? +(((currentTotal - lastTotal) / lastTotal) * 100).toFixed(1)
       : 0;
+
+    const monthlyBudget = req.user.monthlyBudget || 15000;
+    const remainingBudget = Math.max(0, +(monthlyBudget - currentTotal).toFixed(2));
+    const dailySafeToSpend = +(remainingBudget / daysRemaining).toFixed(2);
+    const netSavings = +(currentIncome - currentTotal).toFixed(2);
+    const savingsRate = currentIncome > 0 ? +((netSavings / currentIncome) * 100).toFixed(1) : 0;
+    const availableBalance = netSavings;
+
+    const dayOfMonth = now.getDate() || 1;
+    const avgDailySpend = +(currentTotal / dayOfMonth).toFixed(2);
+    const runwayDays = avgDailySpend > 0 ? Math.round(remainingBudget / avgDailySpend) : daysRemaining;
 
     res.json({
       currentMonth: {
         total: currentTotal,
-        count: currentMonth?.count || 0,
-        avgPerTransaction: currentMonth?.avg ? +currentMonth.avg.toFixed(2) : 0,
-        budget: req.user.monthlyBudget,
-        budgetUsed: req.user.monthlyBudget > 0
-          ? +((currentTotal / req.user.monthlyBudget) * 100).toFixed(1)
+        expenses: currentTotal,
+        income: currentIncome,
+        netSavings,
+        savingsRate,
+        availableBalance,
+        remainingBudget,
+        dailySafeToSpend,
+        runwayDays,
+        daysRemaining,
+        count: currentMonthExp?.count || 0,
+        avgPerTransaction: currentMonthExp?.avg ? +currentMonthExp.avg.toFixed(2) : 0,
+        budget: monthlyBudget,
+        budgetUsed: monthlyBudget > 0
+          ? +((currentTotal / monthlyBudget) * 100).toFixed(1)
           : 0
       },
-      lastMonth: { total: lastTotal, count: lastMonth?.count || 0 },
-      today: { total: today?.total || 0, count: today?.count || 0 },
-      monthOverMonthChange: +monthOverMonthChange
+      lastMonth: {
+        total: lastTotal,
+        expenses: lastTotal,
+        income: lastIncome,
+        count: lastMonthExp?.count || 0
+      },
+      today: {
+        total: +(todayExp?.total || 0).toFixed(2),
+        income: +(todayInc?.total || 0).toFixed(2),
+        count: todayExp?.count || 0
+      },
+      totalIncome: currentIncome,
+      totalExpenses: currentTotal,
+      netSavings,
+      savingsRate,
+      remainingBudget,
+      dailySafeToSpend,
+      runwayDays,
+      monthOverMonthChange
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -71,7 +138,7 @@ router.get('/by-category', cache5m, async (req, res) => {
     startDate.setMonth(startDate.getMonth() - months);
 
     const breakdown = await Expense.aggregate([
-      { $match: { user: userId, date: { $gte: startDate } } },
+      { $match: { user: userId, type: { $ne: 'income' }, date: { $gte: startDate } } },
       { $group: { _id: '$category', total: { $sum: '$amount' }, count: { $sum: 1 }, avg: { $avg: '$amount' } } },
       { $sort: { total: -1 } },
       { $project: { category: '$_id', total: { $round: ['$total', 2] }, count: 1, avg: { $round: ['$avg', 2] }, _id: 0 } }
@@ -144,7 +211,7 @@ router.get('/budget-status', async (req, res) => {
     const [budgets, spending] = await Promise.all([
       Budget.find({ user: req.user._id, month, year }).lean(),
       Expense.aggregate([
-        { $match: { user: userId, date: { $gte: startOfMonth, $lte: endOfMonth } } },
+        { $match: { user: userId, type: { $ne: 'income' }, date: { $gte: startOfMonth, $lte: endOfMonth } } },
         { $group: { _id: '$category', spent: { $sum: '$amount' } } }
       ])
     ]);

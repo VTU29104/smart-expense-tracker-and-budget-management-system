@@ -15,8 +15,10 @@ export interface ExpenseSplit {
 export interface Expense {
   _id: string;
   amount: number;
+  type?: 'expense' | 'income';
   description: string;
   category: CategoryId;
+  notes?: string;
   date: string;
   paymentMethod: string;
   isRecurring: boolean;
@@ -31,13 +33,26 @@ export interface Expense {
 export type CategoryId =
   | 'food' | 'transport' | 'housing' | 'utilities'
   | 'entertainment' | 'healthcare' | 'shopping'
-  | 'education' | 'travel' | 'subscriptions' | 'other';
+  | 'education' | 'travel' | 'subscriptions' | 'other'
+  | 'allowance' | 'scholarship' | 'part_time' | 'stipend'
+  | 'freelance' | 'gift' | 'other_income';
 
 export interface Category {
   id: CategoryId;
   label: string;
   icon: string;
   color: string;
+}
+
+export interface Goal {
+  _id: string;
+  name: string;
+  targetAmount: number;
+  currentAmount: number;
+  targetDate?: string;
+  category?: string;
+  color?: string;
+  createdAt: string;
 }
 
 export interface Budget {
@@ -51,14 +66,30 @@ export interface Budget {
 export interface SummaryData {
   currentMonth: {
     total: number;
+    expenses?: number;
+    income?: number;
+    netSavings?: number;
+    savingsRate?: number;
+    availableBalance?: number;
+    remainingBudget?: number;
+    dailySafeToSpend?: number;
+    runwayDays?: number;
+    daysRemaining?: number;
     count: number;
     avgPerTransaction: number;
     budget: number;
     budgetUsed: number;
   };
-  lastMonth: { total: number; count: number };
-  today: { total: number; count: number };
+  lastMonth: { total: number; count: number; income?: number };
+  today: { total: number; count: number; income?: number };
   monthOverMonthChange: number;
+  totalIncome?: number;
+  totalExpenses?: number;
+  netSavings?: number;
+  savingsRate?: number;
+  remainingBudget?: number;
+  dailySafeToSpend?: number;
+  runwayDays?: number;
 }
 
 export interface CategoryBreakdown {

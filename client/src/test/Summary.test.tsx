@@ -24,6 +24,8 @@ vi.mock('../hooks/useData', () => ({
   useBudgetStatus: () => ({ data: { budgetStatus: [] }, loading: false }),
   useInsights: () => ({ data: { insights: [] }, loading: false }),
   useActivity: () => ({ data: { activities: [], pagination: {} }, loading: false }),
+  useGoals: () => ({ data: { goals: [] }, loading: false }),
+  useRecurring: () => ({ data: { recurring: [] }, loading: false }),
 }));
 
 // ── Mock heavy sub-components ─────────────────────────────────────────────
@@ -74,8 +76,8 @@ describe('Dashboard summary cards', () => {
 
   it('renders the formatted current-month total', () => {
     renderDashboard();
-    // formatCurrency(2456.78, 'GBP') → "£2,456.78"
-    expect(screen.getByText('£2,456.78')).toBeInTheDocument();
+    // formatCurrency(2456.78, 'INR') → "₹2,456.78"
+    expect(screen.getByText('₹2,456.78')).toBeInTheDocument();
   });
 
   it('renders the transaction count as part of the sub-label', () => {
@@ -98,14 +100,14 @@ describe('Dashboard summary cards', () => {
 
   it("renders the remaining budget in the budget card's sub-label", () => {
     renderDashboard();
-    // budget 3000 - total 2456.78 = 543.22 remaining → formatCurrency → "£543.22"
-    expect(screen.getByText(/£543\.22 remaining/)).toBeInTheDocument();
+    // budget 3000 - total 2456.78 = 543.22 remaining → formatCurrency → "₹543.22"
+    expect(screen.getByText(/₹543\.22 remaining/)).toBeInTheDocument();
   });
 
   it("renders today's total spend", () => {
     renderDashboard();
-    // formatCurrency(45) → "£45.00"
-    expect(screen.getByText('£45.00')).toBeInTheDocument();
+    // formatCurrency(45) → "₹45.00"
+    expect(screen.getByText('₹45.00')).toBeInTheDocument();
   });
 
   it('renders the insights panel', () => {

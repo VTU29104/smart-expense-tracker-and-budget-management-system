@@ -3,7 +3,7 @@ import { api } from '../utils/api';
 import {
   Expense, SummaryData, CategoryBreakdown, TrendPoint,
   BudgetStatus, Insight, RecurringExpense, Activity, TagBreakdown,
-  Group, SharedExpense, GroupBalanceResponse, Settlement, Currency
+  Group, SharedExpense, GroupBalanceResponse, Settlement, Currency, Goal
 } from '../types';
 
 // Generic fetch hook
@@ -29,6 +29,7 @@ function useFetch<T>(endpoint: string, deps: unknown[] = []) {
 // Expenses with pagination
 export function useExpenses(params: {
   page?: number;
+  type?: string;
   category?: string;
   startDate?: string;
   endDate?: string;
@@ -36,6 +37,7 @@ export function useExpenses(params: {
 } = {}) {
   const query = new URLSearchParams();
   if (params.page) query.set('page', String(params.page));
+  if (params.type) query.set('type', params.type);
   if (params.category) query.set('category', params.category);
   if (params.startDate) query.set('startDate', params.startDate);
   if (params.endDate) query.set('endDate', params.endDate);
@@ -118,4 +120,8 @@ export function useGroupSettlements(groupId: string) {
 
 export function useCurrencies() {
   return useFetch<{ currencies: Currency[]; baseCurrency: string }>('/currencies');
+}
+
+export function useGoals() {
+  return useFetch<{ goals: Goal[] }>('/goals');
 }

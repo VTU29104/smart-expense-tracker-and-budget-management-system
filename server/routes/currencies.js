@@ -6,15 +6,15 @@ const router = express.Router();
 router.use(protect);
 
 const CURRENCIES = [
-  { code: 'GBP', name: 'British Pound', symbol: '£' },
+  { code: 'INR', name: 'Indian Rupee', symbol: '₹' },
   { code: 'USD', name: 'US Dollar', symbol: '$' },
   { code: 'EUR', name: 'Euro', symbol: '€' },
+  { code: 'GBP', name: 'British Pound', symbol: '£' },
   { code: 'JPY', name: 'Japanese Yen', symbol: '¥' },
   { code: 'AUD', name: 'Australian Dollar', symbol: 'A$' },
   { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$' },
   { code: 'CHF', name: 'Swiss Franc', symbol: 'Fr' },
   { code: 'CNY', name: 'Chinese Yuan', symbol: '¥' },
-  { code: 'INR', name: 'Indian Rupee', symbol: '₹' },
   { code: 'SGD', name: 'Singapore Dollar', symbol: 'S$' },
   { code: 'HKD', name: 'Hong Kong Dollar', symbol: 'HK$' },
   { code: 'NZD', name: 'New Zealand Dollar', symbol: 'NZ$' },
@@ -41,7 +41,7 @@ const CURRENCIES = [
 // GET /api/currencies
 router.get('/', async (req, res) => {
   try {
-    const baseCurrency = req.user.currency || 'GBP';
+    const baseCurrency = req.user.currency || 'INR';
     res.json({ currencies: CURRENCIES, baseCurrency });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -51,7 +51,7 @@ router.get('/', async (req, res) => {
 // GET /api/currencies/rates
 router.get('/rates', async (req, res) => {
   try {
-    const baseCurrency = req.user.currency || 'GBP';
+    const baseCurrency = req.user.currency || 'INR';
     const rateCodes = CURRENCIES.map(c => c.code).filter(c => c !== baseCurrency);
 
     const rateResults = await Promise.allSettled(

@@ -12,6 +12,12 @@ const expenseSchema = new mongoose.Schema({
     required: [true, 'Amount is required'],
     min: [0.01, 'Amount must be positive']
   },
+  type: {
+    type: String,
+    enum: ['expense', 'income'],
+    default: 'expense',
+    index: true
+  },
   description: {
     type: String,
     required: [true, 'Description is required'],
@@ -22,10 +28,19 @@ const expenseSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Category is required'],
     enum: [
+      // Expense categories
       'food', 'transport', 'housing', 'utilities',
       'entertainment', 'healthcare', 'shopping',
-      'education', 'travel', 'subscriptions', 'other'
+      'education', 'travel', 'subscriptions', 'other',
+      // Income categories
+      'allowance', 'scholarship', 'part_time', 'stipend',
+      'freelance', 'gift', 'other_income'
     ]
+  },
+  notes: {
+    type: String,
+    trim: true,
+    maxlength: 500
   },
   date: {
     type: Date,
@@ -55,7 +70,7 @@ const expenseSchema = new mongoose.Schema({
   },
   currency: {
     type: String,
-    default: 'GBP',
+    default: 'INR',
     uppercase: true,
     trim: true
   },

@@ -80,15 +80,30 @@ router.post('/generate', async (req, res) => {
 
     let generated = 0;
     for (const template of dueTemplates) {
-      await Expense.create({
+      // Check for duplicate generation on the same day for this template
+      const dueDate = new Date(template.nextDueDate);
+      const startOfDay = new Date(dueDate.getFullYear(), dueDate.getMonth(), dueDate.getDate(), 0, 0, 0, 0);
+      const endOfDay = new Date(dueDate.getFullYear(), dueDate.getMonth(), dueDate.getDate(), 23, 59, 59, 999);
+
+      const existingExpense = await Expense.findOne({
         user: req.user._id,
-        amount: template.amount,
+        isRecurring: true,
         description: template.description,
-        category: template.category,
-        paymentMethod: template.paymentMethod,
-        date: template.nextDueDate,
-        isRecurring: true
+        date: { $gte: startOfDay, $lte: endOfDay }
       });
+
+      if (!existingExpense) {
+        await Expense.create({
+          user: req.user._id,
+          amount: template.amount,
+          description: template.description,
+          category: template.category,
+          paymentMethod: template.paymentMethod,
+          date: template.nextDueDate,
+          isRecurring: true
+        });
+        generated++;
+      }
 
       // Advance nextDueDate by frequency
       const next = new Date(template.nextDueDate);
@@ -100,8 +115,6 @@ router.post('/generate', async (req, res) => {
         nextDueDate: next,
         lastGenerated: new Date()
       });
-
-      generated++;
     }
 
     if (generated > 0) {

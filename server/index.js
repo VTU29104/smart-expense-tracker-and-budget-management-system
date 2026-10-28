@@ -25,6 +25,7 @@ const activityRoutes = require('./routes/activity');
 const aiRoutes = require('./routes/ai');
 const groupRoutes = require('./routes/groups');
 const currencyRoutes = require('./routes/currencies');
+const goalRoutes = require('./routes/goals');
 
 const app = express();
 
@@ -42,7 +43,7 @@ const apolloServer = new ApolloServer({
           return {
             async renderLandingPage() {
               return {
-                html: '<html><body><h2>ExpenseFlow GraphQL API</h2><p>Introspection is available. Use a GraphQL client to query <code>/graphql</code>.</p></body></html>'
+                html: '<html><body><h2>Sowmyya — Smart Student Expense Tracker GraphQL API</h2><p>Introspection is available. Use a GraphQL client to query <code>/graphql</code>.</p></body></html>'
               };
             }
           };
@@ -118,6 +119,7 @@ app.use('/api/activity', activityRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/currencies', currencyRoutes);
+app.use('/api/goals', goalRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {
@@ -182,7 +184,7 @@ app.use(
   }
   );
 
-if (process.env.VERCEL !== '1') {
+if (process.env.VERCEL !== '1' && process.env.NODE_ENV !== 'test') {
   startupPromise.then(() => {
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);

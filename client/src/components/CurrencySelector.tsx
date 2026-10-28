@@ -8,15 +8,15 @@ interface CurrencyOption {
 }
 
 const ALL_CURRENCIES: CurrencyOption[] = [
-  { code: 'GBP', name: 'British Pound', symbol: '£' },
+  { code: 'INR', name: 'Indian Rupee', symbol: '₹' },
   { code: 'USD', name: 'US Dollar', symbol: '$' },
   { code: 'EUR', name: 'Euro', symbol: '€' },
+  { code: 'GBP', name: 'British Pound', symbol: '£' },
   { code: 'JPY', name: 'Japanese Yen', symbol: '¥' },
   { code: 'AUD', name: 'Australian Dollar', symbol: 'A$' },
   { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$' },
   { code: 'CHF', name: 'Swiss Franc', symbol: 'Fr' },
   { code: 'CNY', name: 'Chinese Yuan', symbol: '¥' },
-  { code: 'INR', name: 'Indian Rupee', symbol: '₹' },
   { code: 'SGD', name: 'Singapore Dollar', symbol: 'S$' },
   { code: 'HKD', name: 'Hong Kong Dollar', symbol: 'HK$' },
   { code: 'NZD', name: 'New Zealand Dollar', symbol: 'NZ$' },
@@ -40,7 +40,7 @@ const ALL_CURRENCIES: CurrencyOption[] = [
   { code: 'TRY', name: 'Turkish Lira', symbol: '₺' }
 ];
 
-const PINNED_CODES = ['GBP', 'USD', 'EUR'];
+const PINNED_CODES = ['INR', 'USD', 'EUR', 'GBP'];
 
 interface Props {
   value: string;

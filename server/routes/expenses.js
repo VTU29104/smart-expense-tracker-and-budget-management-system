@@ -13,6 +13,7 @@ router.use(protect);
 // Build shared filter from query params
 function buildFilter(userId, q) {
   const filter = { user: userId };
+  if (q.type) filter.type = q.type;
   if (q.category) filter.category = q.category;
   if (q.startDate || q.endDate) {
     filter.date = {};
@@ -27,6 +28,7 @@ function buildFilter(userId, q) {
 router.get('/', [
   query('page').optional().isInt({ min: 1 }),
   query('limit').optional().isInt({ min: 1, max: 100 }),
+  query('type').optional().isIn(['expense', 'income']),
   query('category').optional().isString(),
   query('startDate').optional().isISO8601(),
   query('endDate').optional().isISO8601(),
@@ -83,15 +85,17 @@ router.get('/export/csv', async (req, res) => {
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', `attachment; filename=expenses-${today}.csv`);
 
-    const header = 'Date,Description,Category,Amount,Payment Method,Recurring\n';
+    const header = 'Date,Type,Description,Category,Amount,Payment Method,Recurring,Notes\n';
     const rows = expenses.map(e => {
       const date = new Date(e.date).toISOString().split('T')[0];
+      const type = e.type === 'income' ? 'Income' : 'Expense';
       const desc = `"${(e.description || '').replace(/"/g, '""')}"`;
       const cat = e.category || '';
       const amt = e.amount.toFixed(2);
       const pm = (e.paymentMethod || '').replace(/_/g, ' ');
       const rec = e.isRecurring ? 'Yes' : 'No';
-      return `${date},${desc},${cat},${amt},${pm},${rec}`;
+      const notes = `"${(e.notes || '').replace(/"/g, '""')}"`;
+      return `${date},${type},${desc},${cat},${amt},${pm},${rec},${notes}`;
     }).join('\n');
 
     res.send(header + rows);
@@ -106,9 +110,10 @@ router.get('/export/pdf', async (req, res) => {
     const filter = buildFilter(req.user._id, req.query);
     const expenses = await Expense.find(filter).sort({ date: -1 }).lean();
 
-    const total = expenses.reduce((s, e) => s + e.amount, 0);
+    const totalExpense = expenses.filter(e => e.type !== 'income').reduce((s, e) => s + e.amount, 0);
+    const totalIncome = expenses.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
     const topCatMap = {};
-    expenses.forEach(e => { topCatMap[e.category] = (topCatMap[e.category] || 0) + e.amount; });
+    expenses.filter(e => e.type !== 'income').forEach(e => { topCatMap[e.category] = (topCatMap[e.category] || 0) + e.amount; });
     const topCat = Object.entries(topCatMap).sort((a, b) => b[1] - a[1])[0]?.[0] || '—';
 
     const dateFrom = req.query.startDate || (expenses.at(-1) ? new Date(expenses.at(-1).date).toISOString().split('T')[0] : '—');
@@ -116,13 +121,13 @@ router.get('/export/pdf', async (req, res) => {
 
     const doc = new PDFDocument({ margin: 48, size: 'A4' });
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=expenses-${dateTo}.pdf`);
+    res.setHeader('Content-Disposition', `attachment; filename=financial-report-${dateTo}.pdf`);
     doc.pipe(res);
 
     // Header
-    doc.fontSize(22).font('Helvetica-Bold').text('Expense Report', { align: 'left' });
-    doc.fontSize(10).font('Helvetica').fillColor('#6b7280')
-      .text(`Period: ${dateFrom} → ${dateTo}`, { align: 'left' });
+    doc.fontSize(20).font('Helvetica-Bold').text('expensetracker — Student Financial Statement', { align: 'left' });
+    doc.fontSize(9).font('Helvetica').fillColor('#6b7280')
+      .text(`Smart Student Finance — Spend wisely. Save confidently. · Period: ${dateFrom} -> ${dateTo}`, { align: 'left' });
     doc.moveDown(0.5);
     doc.moveTo(48, doc.y).lineTo(547, doc.y).strokeColor('#e5e7eb').stroke();
     doc.moveDown(0.8);
@@ -131,9 +136,11 @@ router.get('/export/pdf', async (req, res) => {
     doc.fontSize(12).font('Helvetica-Bold').fillColor('#111827').text('Summary');
     doc.moveDown(0.4);
     const summaryItems = [
-      ['Total Spent', `£${total.toFixed(2)}`],
+      ['Total Expenses', `Rs. ${totalExpense.toFixed(2)}`],
+      ['Total Income', `Rs. ${totalIncome.toFixed(2)}`],
+      ['Net Savings', `Rs. ${(totalIncome - totalExpense).toFixed(2)}`],
       ['Transactions', String(expenses.length)],
-      ['Top Category', topCat.charAt(0).toUpperCase() + topCat.slice(1)]
+      ['Top Expense Category', topCat.charAt(0).toUpperCase() + topCat.slice(1)]
     ];
     summaryItems.forEach(([label, value]) => {
       doc.fontSize(10).font('Helvetica').fillColor('#6b7280').text(label, { continued: true, width: 150 });
@@ -162,11 +169,11 @@ router.get('/export/pdf', async (req, res) => {
       const bg = i % 2 === 0 ? '#f9fafb' : '#ffffff';
       doc.rect(48, rowY - 2, 499, 16).fill(bg);
 
-      const dateStr = new Date(e.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' });
+      const dateStr = new Date(e.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: '2-digit' });
       const desc = (e.description || '').substring(0, 28);
       const cat = (e.category || '').replace(/^\w/, c => c.toUpperCase());
       const pm = (e.paymentMethod || '').replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase());
-      const amt = `£${e.amount.toFixed(2)}`;
+      const amt = `Rs. ${e.amount.toFixed(2)}`;
 
       doc.fontSize(9).font('Helvetica').fillColor('#374151');
       doc.text(dateStr, cols.date, rowY, { width: 70 });
@@ -182,7 +189,7 @@ router.get('/export/pdf', async (req, res) => {
     doc.moveTo(48, doc.y).lineTo(547, doc.y).strokeColor('#e5e7eb').stroke();
     doc.moveDown(0.5);
     doc.fontSize(8).font('Helvetica').fillColor('#9ca3af')
-      .text(`Generated on ${new Date().toLocaleString('en-GB')} · ExpenseFlow`, { align: 'center' });
+      .text(`Generated on ${new Date().toLocaleString('en-IN')} · Sowmyya — Smart Student Expense Tracker`, { align: 'center' });
 
     doc.end();
   } catch (err) {
@@ -205,9 +212,11 @@ router.get('/:id', async (req, res) => {
 router.post('/', [
   body('amount').isFloat({ min: 0.01 }).withMessage('Amount must be positive'),
   body('description').trim().notEmpty().withMessage('Description is required'),
+  body('type').optional().isIn(['expense', 'income']),
   body('category').isIn([
     'food', 'transport', 'housing', 'utilities', 'entertainment',
-    'healthcare', 'shopping', 'education', 'travel', 'subscriptions', 'other'
+    'healthcare', 'shopping', 'education', 'travel', 'subscriptions', 'other',
+    'allowance', 'scholarship', 'part_time', 'stipend', 'freelance', 'gift', 'other_income'
   ]).withMessage('Valid category required'),
   body('date').optional().isISO8601()
 ], async (req, res) => {
@@ -215,7 +224,7 @@ router.post('/', [
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-    const baseCurrency = req.user.currency || 'GBP';
+    const baseCurrency = req.user.currency || 'INR';
     const reqCurrency = (req.body.currency || baseCurrency).toUpperCase();
     let amount = parseFloat(req.body.amount);
     let originalAmount = amount;
@@ -232,8 +241,10 @@ router.post('/', [
       }
     }
 
+    const isIncome = req.body.type === 'income' || ['allowance', 'scholarship', 'part_time', 'stipend', 'freelance', 'gift', 'other_income'].includes(req.body.category);
     const expenseData = {
       ...req.body,
+      type: isIncome ? 'income' : 'expense',
       user: req.user._id,
       amount,
       currency: reqCurrency,
@@ -263,7 +274,7 @@ router.post('/', [
 // PUT /api/expenses/:id
 router.put('/:id', async (req, res) => {
   try {
-    const baseCurrency = req.user.currency || 'GBP';
+    const baseCurrency = req.user.currency || 'INR';
     const reqCurrency = req.body.currency ? req.body.currency.toUpperCase() : baseCurrency;
     let updateData = { ...req.body };
 

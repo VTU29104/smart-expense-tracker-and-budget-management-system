@@ -104,32 +104,32 @@ const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
   return JSON.parse(cleaned);
 }
 
-// Keyword-based mock categoriser for demo mode
+// Keyword-based mock categoriser for demo mode (enhanced with student keywords)
 const KEYWORD_MAP = {
-  food: ['tesco', 'sainsbury', 'asda', 'aldi', 'lidl', 'morrisons', 'waitrose', 'pret', 'costa', 'starbucks', 'mcdonalds', 'nandos', 'deliveroo', 'uber eats', 'just eat', 'grocery', 'restaurant', 'cafe', 'coffee', 'lunch', 'dinner', 'breakfast', 'pizza', 'burger'],
-  transport: ['uber', 'bolt', 'taxi', 'train', 'bus', 'oyster', 'tfl', 'petrol', 'fuel', 'parking', 'congestion', 'flight', 'airline', 'travelcard'],
-  housing: ['rent', 'mortgage', 'landlord', 'estate agent', 'council tax', 'home insurance', 'contents insurance'],
-  utilities: ['electric', 'gas', 'water', 'internet', 'broadband', 'phone bill', 'mobile bill', 'bt', 'vodafone', 'ee', 'three'],
-  entertainment: ['netflix', 'spotify', 'cinema', 'theatre', 'concert', 'gig', 'game', 'playstation', 'xbox', 'steam', 'disney'],
-  healthcare: ['pharmacy', 'boots', 'doctor', 'dentist', 'optician', 'gym', 'prescription', 'vitamin', 'health'],
-  shopping: ['amazon', 'ebay', 'asos', 'zara', 'h&m', 'primark', 'john lewis', 'argos', 'ikea', 'clothes', 'shoes', 'gift'],
-  education: ['udemy', 'coursera', 'book', 'textbook', 'course', 'conference', 'workshop', 'oreilly', 'pluralsight'],
-  travel: ['airbnb', 'booking.com', 'hotel', 'hostel', 'travel insurance', 'luggage', 'visa'],
-  subscriptions: ['subscription', 'monthly', 'annual plan', 'chatgpt', 'github', 'notion', 'icloud', 'google one', 'apple', 'medium']
+  food: ['canteen', 'mess', 'cafeteria', 'samosa', 'chai', 'maggi', 'snack', 'swiggy', 'zomato', 'restaurant', 'cafe', 'coffee', 'lunch', 'dinner', 'breakfast', 'pizza', 'burger', 'grocery', 'tesco', 'pret'],
+  transport: ['metro', 'bus', 'auto', 'rickshaw', 'rapido', 'ola', 'uber', 'bus pass', 'train', 'irctc', 'petrol', 'fuel', 'commute', 'bike', 'cab', 'flight'],
+  housing: ['hostel', 'pg', 'paying guest', 'rent', 'room rent', 'flat share', 'deposit', 'maintenance', 'landlord', 'electricity bill'],
+  utilities: ['recharge', 'jio', 'airtel', 'vi', 'wifi', 'wi-fi', 'broadband', 'mobile pack', 'phone bill', 'internet', 'electricity', 'water bill'],
+  entertainment: ['movie', 'cinema', 'pvr', 'inox', 'netflix', 'spotify', 'prime', 'gaming', 'steam', 'game', 'hangout', 'party', 'concert', 'outing'],
+  healthcare: ['pharmacy', 'medicine', 'apollo', 'medical', 'doctor', 'clinic', 'tablet', 'vitamin', 'gym', 'health'],
+  shopping: ['stationery', 'notebook', 'record', 'pen', 'printout', 'xerox', 'amazon', 'flipkart', 'myntra', 'clothes', 'shoes', 'backpack', 'bag', 'zara', 'h&m'],
+  education: ['tuition', 'college fee', 'sem fee', 'exam fee', 'book', 'textbook', 'coursera', 'udemy', 'notes', 'course', 'workshop', 'lab', 'library', 'certification'],
+  travel: ['trip', 'home visit', 'vacation', 'flight', 'irctc tatkal', 'bus ticket', 'redbus', 'hotel', 'resort', 'weekend trip'],
+  subscriptions: ['chatgpt', 'github', 'copilot', 'spotify student', 'notion', 'youtube premium', 'medium', 'icloud', 'google one', 'ott', 'subscription']
 };
 
 const CATEGORY_REASONS = {
-  food: 'Matches a food retailer or dining keyword.',
-  transport: 'Matches a transport or travel service keyword.',
-  housing: 'Matches a housing or rental keyword.',
-  utilities: 'Matches a utilities or bills keyword.',
-  entertainment: 'Matches an entertainment service keyword.',
-  healthcare: 'Matches a health or medical keyword.',
-  shopping: 'Matches a retail or shopping keyword.',
-  education: 'Matches an education or learning keyword.',
-  travel: 'Matches a travel or accommodation keyword.',
-  subscriptions: 'Matches a subscription service keyword.',
-  other: 'No specific keyword matched; classified as other.'
+  food: 'Matches student canteen, mess, or dining keywords.',
+  transport: 'Matches campus transit, metro, bus, or commute keywords.',
+  housing: 'Matches hostel, PG, or student rent keywords.',
+  utilities: 'Matches mobile recharge, campus Wi-Fi, or utility keywords.',
+  entertainment: 'Matches movies, student outings, or streaming keywords.',
+  healthcare: 'Matches medical, pharmacy, or student wellness keywords.',
+  shopping: 'Matches college stationery, supplies, or shopping keywords.',
+  education: 'Matches tuition, semester fees, textbooks, or exam keywords.',
+  travel: 'Matches holiday travel, train booking, or home visit keywords.',
+  subscriptions: 'Matches EdTech tools, software, or media subscriptions.',
+  other: 'No specific keyword matched; classified as other student expense.'
 };
 
 function mockCategorise(description) {

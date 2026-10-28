@@ -4,20 +4,24 @@ import { formatCurrency, formatDate, getCategoryInfo } from '../utils/format';
 // ── formatCurrency ─────────────────────────────────────────────────────────
 
 describe('formatCurrency', () => {
-  it('formats a typical GBP amount with £ symbol and two decimal places', () => {
-    expect(formatCurrency(1234.56)).toBe('£1,234.56');
+  it('formats a typical INR amount with ₹ symbol and two decimal places by default', () => {
+    expect(formatCurrency(1234.56)).toBe('₹1,234.56');
   });
 
-  it('formats zero as £0.00', () => {
-    expect(formatCurrency(0)).toBe('£0.00');
+  it('formats zero as ₹0.00', () => {
+    expect(formatCurrency(0)).toBe('₹0.00');
   });
 
   it('formats negative amounts with a minus sign', () => {
-    expect(formatCurrency(-42.5)).toBe('-£42.50');
+    expect(formatCurrency(-42.5)).toBe('-₹42.50');
   });
 
-  it('adds thousands separators for large amounts', () => {
-    expect(formatCurrency(1000000)).toBe('£1,000,000.00');
+  it('formats large amounts with Indian numbering system separators', () => {
+    expect(formatCurrency(1000000)).toBe('₹10,00,000.00');
+  });
+
+  it('formats GBP amounts with £ symbol when currency is GBP', () => {
+    expect(formatCurrency(1234.56, 'GBP')).toBe('£1,234.56');
   });
 
   it('formats USD amounts with $ symbol when currency is USD', () => {
@@ -32,21 +36,20 @@ describe('formatCurrency', () => {
     expect(result).toContain('€');
   });
 
-  it('handles fractional pence correctly (rounds to 2 dp)', () => {
-    // Intl.NumberFormat rounds — 10.555 → 10.56 in en-GB
+  it('handles fractional paise correctly (rounds to 2 dp)', () => {
     const result = formatCurrency(10.555);
-    expect(result).toMatch(/£10\.5[56]/);
+    expect(result).toMatch(/₹10\.5[56]/);
   });
 });
 
 // ── getCategoryInfo ────────────────────────────────────────────────────────
 
 describe('getCategoryInfo', () => {
-  it('returns the correct label for "food"', () => {
-    expect(getCategoryInfo('food').label).toBe('Food & Dining');
+  it('returns the student label for "food"', () => {
+    expect(getCategoryInfo('food').label).toBe('Canteen, Mess & Food');
   });
 
-  it('returns an icon for every known category', () => {
+  it('returns an icon for every known student category', () => {
     const categories = [
       'food', 'transport', 'housing', 'utilities', 'entertainment',
       'healthcare', 'shopping', 'education', 'travel', 'subscriptions', 'other',
@@ -60,7 +63,7 @@ describe('getCategoryInfo', () => {
 
   it('falls back to "other" for an unknown category', () => {
     const info = getCategoryInfo('unicorn');
-    expect(info.label).toBe('Other');
+    expect(info.label).toBe('Other Student Expenses');
   });
 });
 

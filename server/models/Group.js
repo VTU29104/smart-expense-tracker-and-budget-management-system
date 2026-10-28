@@ -10,7 +10,7 @@ const groupSchema = new mongoose.Schema({
     joinedAt: { type: Date, default: Date.now },
     status: { type: String, enum: ['active', 'invited', 'left'], default: 'active' }
   }],
-  currency: { type: String, default: 'GBP' },
+  currency: { type: String, default: 'INR' },
   isSettled: { type: Boolean, default: false }
 }, { timestamps: true });
 

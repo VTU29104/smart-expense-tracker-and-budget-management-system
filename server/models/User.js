@@ -28,11 +28,11 @@ const userSchema = new mongoose.Schema({
   },
   currency: {
     type: String,
-    default: 'GBP'
+    default: 'INR'
   },
   monthlyBudget: {
     type: Number,
-    default: 2000
+    default: 15000
   }
 }, {
   timestamps: true

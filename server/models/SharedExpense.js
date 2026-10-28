@@ -9,7 +9,7 @@ const sharedExpenseSchema = new mongoose.Schema({
   group: { type: mongoose.Schema.Types.ObjectId, ref: 'Group', required: true },
   paidBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   amount: { type: Number, required: true, min: 0.01 },
-  currency: { type: String, default: 'GBP' },
+  currency: { type: String, default: 'INR' },
   description: { type: String, required: true, trim: true, maxlength: 200 },
   category: { type: String, enum: CATEGORIES, default: 'other' },
   date: { type: Date, required: true, default: Date.now },
